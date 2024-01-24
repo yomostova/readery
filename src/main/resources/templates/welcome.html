@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">Readery</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/logout}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<br /><br />
+
+<div class="container">
+    <div class="row">
+        <h1> Welcome to Readery!</h1>
+    </div>
+    <div><a th:insert="~{search :: search-panel}"></a></div>
+</div>
+
+<section class="content">
+    <div class="container text-center">
+        <h1>My Books</h1>
+
+        <div class="row row-cols-1 row-cols-md-2">
+            <div class="card mb-3" th:each="readingStatus: ${userStatuses}">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img th:src="${readingStatus.book.coverUrl}"
+                             class="img-fluid rounded-start">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <a
+                                    th:href="@{'/books/' + ${readingStatus.book.id}}" class="card-title" th:text="${readingStatus.book.title}">Title</a>
+                            <p class="card-text"
+                               th:text="${readingStatus.book.authorsNames}">Author name</p>
+                                <th:block
+                                        th:with="status=${readingStatus.status.toString()}">
+                                    <p th:if="${status == 'WISHLIST'}" class="card-text">&#127775; Wishlist</p>
+                                    <p th:if="${status == 'READING'}" class="card-text">&#128214; Reading</p>
+                                    <p th:if="${status == 'FINISHED'}" class="card-text">&#9989; Finished</p>
+                                    <p th:if="${status == 'UNFINISHED'}" class="card-text">&#128218; Unfinished</p>
+                                    <p th:if="${status == 'UNKNOWN'}"
+                                       class="card-text">Status</p>
+                                </th:block>
+
+                            <p class="card-text">
+                                <span th:if="${readingStatus.rating > 0}">
+                                    <span
+                                            th:each="rating: ${#numbers.sequence(1, readingStatus.rating)}">&#11088;</span>
+                                </span>
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+</body>
+</html>
