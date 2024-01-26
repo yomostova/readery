@@ -28,6 +28,8 @@ https://openlibrary.org/developers/dumps - we need **works dump** and **authors 
 ./gradlew build
 ./gradlew run
 ```
+Check out the website at http://localhost:8080/.
+
 
 ## Functionality
 ### 1. Sign up and log into your account
