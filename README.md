@@ -30,14 +30,29 @@ https://openlibrary.org/developers/dumps - we need **works dump** and **authors 
 ```
 Check out the website at http://localhost:8080/.
 
-
 ## Functionality
 ### 1. Sign up and log into your account
-### 2. Search through a catalogue of books from Open Library
-### 3. Track the status of your books
-Set start and finished dates, rating, add books to your wishlist or set status to reading, read or unfinished. 
-### 4. Look through the books you've interacted with on the home page
+<img src="screenshots/Screenshot 2024-01-30 at 15.11.40.png" alt="drawing" width="500"/>
+<p float="left">
+<img src="screenshots/Screenshot 2024-01-30 at 15.11.53.png" alt="drawing" width="400"/>
+<img src="screenshots/Screenshot 2024-01-30 at 15.12.07.png" alt="drawing" width="400"/>
+</p>
 
+### 2. Search through a catalogue of books from Open Library
+<p float="left">
+<img src="screenshots/Screenshot 2024-01-31 at 10.37.00.png" alt="drawing" width="405"/>
+<img src="screenshots/Screenshot 2024-01-31 at 10.37.38.png" alt="drawing" width="400"/>
+</p>
+
+### 3. Track the status of your books
+Set start and finished dates, rating, add books to your wishlist or set status to reading, read or unfinished.
+<p float="left">
+<img src="screenshots/Screenshot 2024-01-31 at 10.37.49.png" alt="drawing" width="415"/>
+<img src="screenshots/Screenshot 2024-01-31 at 10.38.04.png" alt="drawing" width="400"/>
+</p>
+
+### 4. Look through the books you've interacted with on the home page
+<img src="screenshots/Screenshot 2024-01-31 at 10.40.28.png" alt="drawing" width="500"/>
 
 :small_blue_diamond: **current TODO**: add navigation by author (author's page)
 
