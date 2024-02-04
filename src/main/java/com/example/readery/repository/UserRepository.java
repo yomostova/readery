@@ -1,6 +1,6 @@
 package com.example.readery.repository;
 
-import com.example.readery.User;
+import com.example.readery.entity.User;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

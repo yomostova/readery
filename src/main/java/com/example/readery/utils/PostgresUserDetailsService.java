@@ -1,6 +1,8 @@
-package com.example.readery;
+package com.example.readery.utils;
 
+import com.example.readery.entity.User;
 import com.example.readery.repository.UserRepository;
+import com.example.readery.utils.PostgresUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

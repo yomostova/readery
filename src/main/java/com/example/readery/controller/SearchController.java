@@ -1,6 +1,6 @@
 package com.example.readery.controller;
 
-import com.example.readery.Book;
+import com.example.readery.entity.Book;
 import com.example.readery.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

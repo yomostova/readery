@@ -1,5 +1,6 @@
-package com.example.readery;
+package com.example.readery.utils;
 
+import com.example.readery.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

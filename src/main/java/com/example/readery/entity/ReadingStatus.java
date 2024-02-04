@@ -1,4 +1,4 @@
-package com.example.readery;
+package com.example.readery.entity;
 
 import jakarta.persistence.*;
 

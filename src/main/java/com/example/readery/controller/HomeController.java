@@ -1,7 +1,7 @@
 package com.example.readery.controller;
-import com.example.readery.PostgresUserDetails;
-import com.example.readery.ReadingStatus;
-import com.example.readery.User;
+import com.example.readery.utils.PostgresUserDetails;
+import com.example.readery.entity.ReadingStatus;
+import com.example.readery.entity.User;
 import com.example.readery.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

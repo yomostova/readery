@@ -1,7 +1,7 @@
 package com.example.readery.repository;
 
-import com.example.readery.ReadingStatus;
-import com.example.readery.ReadingStatusKey;
+import com.example.readery.entity.ReadingStatus;
+import com.example.readery.entity.ReadingStatusKey;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

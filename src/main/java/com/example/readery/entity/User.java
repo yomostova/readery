@@ -1,4 +1,5 @@
-package com.example.readery;
+package com.example.readery.entity;
+import com.example.readery.entity.ReadingStatus;
 import jakarta.persistence.*;
 
 import java.util.HashSet;

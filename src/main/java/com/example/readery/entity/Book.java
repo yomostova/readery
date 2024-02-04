@@ -1,19 +1,22 @@
-package com.example.readery;
+package com.example.readery.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
 import java.util.*;
 
 @Entity
-@Table(name = "books")
+@Table(name = "books", indexes = @Index(columnList = "book_title"))
 public class Book {
     @Id
     @PrimaryKeyJoinColumn(name = "book_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "BOOK_SEQ")
+    @SequenceGenerator(name = "BOOK_SEQ", sequenceName = "BOOK_SEQ")
     private int id;
 
-    @Column(name = "book_title", length = 1024)
+    @Column(name = "book_title", columnDefinition = "text")
     private String title;
 
     @Column(name = "publication_date")
@@ -32,7 +35,11 @@ public class Book {
     private Set<Author> authors = new HashSet<>();
 
     @ElementCollection
+    @Column(length=1024)
     private List<String> authorsNames = new ArrayList<>();
+
+    @ElementCollection
+    private Set<String> authorLibraryIds = new HashSet<>();
 
     @OneToMany(mappedBy = "book")
     private Map<Integer, ReadingStatus> readingStatuses = new HashMap<>();
@@ -83,6 +90,10 @@ public class Book {
         return coverUrl;
     }
 
+    public Set<String> getAuthorLibraryIds() {
+        return authorLibraryIds;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -119,5 +130,9 @@ public class Book {
 
     public void setCoverUrl(String coverUrl) {
         this.coverUrl = coverUrl;
+    }
+
+    public void setAuthorLibraryIds(Set<String> authorLibraryIds) {
+        this.authorLibraryIds = authorLibraryIds;
     }
 }
