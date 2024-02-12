@@ -14,9 +14,11 @@ import java.util.stream.Collectors;
 
 @Controller
 public class HomeController {
-
-    @Autowired
     UserRepository userRepository;
+
+    public HomeController(UserRepository userRepository){
+        this.userRepository = userRepository;
+    }
 
     @GetMapping("/")
     public String home(@AuthenticationPrincipal PostgresUserDetails principle, Model model){

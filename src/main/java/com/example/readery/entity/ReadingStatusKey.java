@@ -17,6 +17,11 @@ public class ReadingStatusKey implements Serializable {
     public ReadingStatusKey() {
     }
 
+    public ReadingStatusKey(int bookId, int userId){
+        this.bookId = bookId;
+        this.userId = userId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

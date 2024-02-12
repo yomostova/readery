@@ -8,12 +8,15 @@ import com.example.readery.repository.BookRepository;
 import com.example.readery.repository.ReadingStatusRepository;
 import com.example.readery.repository.UserRepository;
 import com.example.readery.utils.PostgresUserDetails;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -22,14 +25,17 @@ import java.time.LocalDate;
 @Controller
 public class ReadingStatusController {
 
-    @Autowired
     ReadingStatusRepository readingStatusRepository;
-
-    @Autowired
     BookRepository bookRepository;
-
-    @Autowired
     UserRepository userRepository;
+
+    public ReadingStatusController(ReadingStatusRepository readingStatusRepository,
+                                   BookRepository bookRepository,
+                                   UserRepository userRepository){
+        this.readingStatusRepository = readingStatusRepository;
+        this.bookRepository = bookRepository;
+        this.userRepository = userRepository;
+    }
 
     @PostMapping("/addUserBook")
     public ModelAndView addBookToUser(@RequestParam MultiValueMap<String, String> formData,
@@ -38,18 +44,31 @@ public class ReadingStatusController {
         if (principle == null || principle.getUser() == null || principle.getUser().getId() == 0) {
             return null;
         }
+        String bookId = formData.getFirst("bookId");
+        if (bookId == null || bookId.isEmpty()) {
+            throw new IllegalArgumentException("Book ID cannot be null or empty");
+        }
+        ReadingStatus readingStatus = parseFormToReadingStatus(formData, bookId,
+                principle.getId());
+        User user = userRepository.findById(principle.getId()).orElse(new User());
+        Book book =
+                bookRepository.findById(Integer.parseInt(bookId)).orElse(new Book());
+        readingStatus.setUser(user);
+        readingStatus.setBook(book);
+        readingStatusRepository.save(readingStatus);
+
+        ModelAndView modelAndView = new ModelAndView("redirect:/books/" + bookId);
+        redirAttr.addFlashAttribute("success", "Update was successful!");
+        return modelAndView;
+    }
+
+    private ReadingStatus parseFormToReadingStatus(MultiValueMap<String,
+            String> formData, String bookId, int userId){
         ReadingStatus readingStatus = new ReadingStatus();
         ReadingStatusKey key = new ReadingStatusKey();
-
-        key.setUserId(principle.getId());
-        String bookId = formData.getFirst("bookId");
-        if (bookId != null && !bookId.isEmpty()) {
-            key.setBookId(Integer.parseInt(bookId));
-            readingStatus.setId(key);
-        } else {
-            throw new RuntimeException("Book id was not provided for Reading " +
-                    "Status update!");
-        }
+        key.setBookId(Integer.parseInt(bookId));
+        key.setUserId(userId);
+        readingStatus.setId(key);
 
         String startDate = formData.getFirst("startDate");
         if (startDate != null && !startDate.isEmpty()) {
@@ -67,17 +86,12 @@ public class ReadingStatusController {
         if (rating != null && !rating.isEmpty()) {
             readingStatus.setRating(Integer.parseInt(rating));
         }
+        return readingStatus;
+    }
 
-        User user = userRepository.findById(principle.getId()).orElse(new User());
-        Book book = bookRepository.findById(Integer.parseInt(bookId)).orElse(new Book());
-
-        readingStatus.setUser(user);
-        readingStatus.setBook(book);
-        readingStatusRepository.save(readingStatus);
-
-        ModelAndView modelAndView = new ModelAndView("redirect:/books/" + bookId);
-        redirAttr.addFlashAttribute("success", "Update was successful!");
-        return modelAndView;
-
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 }

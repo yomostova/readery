@@ -49,6 +49,17 @@ public class Book {
         this.authorsNames.add(author.getName());
     }
 
+    public void configureCover(String coverImageBase){
+        if(coverId != null && !coverId.isEmpty()){
+            String coverUrl = coverImageBase + coverId + "-M.jpg";
+            if(this.coverUrl == null){
+                this.coverUrl = coverUrl;
+            }
+        } else {
+            this.coverUrl = "/images/no-image.png";
+        }
+    }
+
     @Override
     public String toString() {
         return "Book titled " + title + " by " + authors.toString();

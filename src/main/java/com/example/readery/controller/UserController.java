@@ -11,10 +11,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class UserController {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    UserRepository userRepository;
+    PasswordEncoder passwordEncoder;
+
+    public UserController(UserRepository userRepository,
+                          PasswordEncoder passwordEncoder){
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
@@ -32,7 +36,6 @@ public class UserController {
         userRepository.save(user);
         return "register_success";
     }
-
 
     @GetMapping("/login")
     public String login(){
