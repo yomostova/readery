@@ -5,12 +5,13 @@ import com.example.readery.entity.Book;
 import com.example.readery.repository.AuthorRepository;
 import com.example.readery.repository.BookRepository;
 import com.google.common.collect.Iterators;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -20,10 +21,9 @@ import java.util.stream.Stream;
 
 @Component
 // Used only for the initial population of database with Open Library data
+@Slf4j
 public class InitializeDatabase {
-    @Autowired
     BookRepository bookRepository;
-    @Autowired
     AuthorRepository authorRepository;
 
     @Value("${datadump.location.works}")
@@ -32,15 +32,23 @@ public class InitializeDatabase {
     @Value("${datadump.location.authors}")
     private String authorsLocation;
 
+    //TODO remove hardcoded values
     private static final int AUTHORS = 12570513;
     private static final int WORKS = 34230390;
     private static final int BATCH_SIZE = 100000;
+
+    public InitializeDatabase(BookRepository bookRepository,
+                             AuthorRepository authorRepository){
+        this.bookRepository = bookRepository;
+        this.authorRepository = authorRepository;
+    }
 
     public void setUp(){
         initAuthors();
         initWorks();
         System.out.println("----Initalization complete------");
     }
+
     private void initAuthors(){
         System.out.println("START AUTHOR INSERT");
         try(Stream<String> authors = Files.lines(Paths.get(authorsLocation))){
@@ -50,11 +58,17 @@ public class InitializeDatabase {
                     JSONObject jsonObject = new JSONObject(jsonString);
                     Author author = new Author();
                     author.setName(jsonObject.optString("name"));
-                    author.setLibraryId(jsonObject.optString("key").substring(9));
+                    if(jsonObject.has("key")){
+                        author.setLibraryId(jsonObject.optString("key").substring(9));
+                    }else{
+                        author.setLibraryId("");
+                        log.info(author.getName() + " does not have Library " +
+                                "ID");
+                    }
                     return author;
                 }
                 catch(JSONException e){
-                    e.printStackTrace();
+                    log.error("Error parsing JSON: " + jsonString, e);
                     return null;
                 }
             }).filter(Objects::nonNull);
@@ -69,9 +83,10 @@ public class InitializeDatabase {
                         " %");
             };
             System.out.println("---Saving rest of authors to DB---");
-            authorRepository.deleteDuplicates();
+            System.out.println("---All authors have been saved");
+            //authorRepository.deleteDuplicates();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error parsing the file: " + authorsLocation, e);
         }
     }
 
@@ -85,6 +100,7 @@ public class InitializeDatabase {
                     Book book = new Book();
                     book.setTitle(jsonObject.optString("title"));
                     JSONObject descr = jsonObject.optJSONObject("description");
+
                     if(descr != null){
                         book.setDescription(descr.optString("value"));
                     }
@@ -115,7 +131,7 @@ public class InitializeDatabase {
                     return book;
                 }
                 catch(JSONException e){
-                    //e.printStackTrace();
+                    log.error("Error parsing JSON: " + jsonString, e);
                     return null;
                 }
             }).filter(Objects::nonNull);
@@ -131,10 +147,12 @@ public class InitializeDatabase {
             }
             System.out.println("---Saving rest of books to DB---");
             //custom SQL query to join books and authors through OpenLibrary id
+            System.out.println("---All books have been saved---");
+            System.out.println("---Making final setup---");
             bookRepository.updateAuthors();
             bookRepository.updateAuthorNames();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error parsing the file: " + worksLocation, e);
         }
     }
 }
