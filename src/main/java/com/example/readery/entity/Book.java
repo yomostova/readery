@@ -1,8 +1,6 @@
 package com.example.readery.entity;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -145,5 +143,17 @@ public class Book {
 
     public void setAuthorLibraryIds(Set<String> authorLibraryIds) {
         this.authorLibraryIds = authorLibraryIds;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book book)) return false;
+        return id == book.id && Objects.equals(title, book.title) && Objects.equals(publicationDate, book.publicationDate) && Objects.equals(description, book.description) && Objects.equals(coverId, book.coverId) && Objects.equals(coverUrl, book.coverUrl);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, publicationDate, description, coverId, coverUrl);
     }
 }
