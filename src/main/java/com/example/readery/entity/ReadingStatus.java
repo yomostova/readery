@@ -3,6 +3,7 @@ package com.example.readery.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 public class ReadingStatus {
@@ -89,5 +90,17 @@ public class ReadingStatus {
 
     public void setRating(int rating) {
         this.rating = rating;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ReadingStatus that)) return false;
+        return rating == that.rating && Objects.equals(id, that.id) && Objects.equals(user, that.user) && Objects.equals(book, that.book) && status == that.status && Objects.equals(startedDate, that.startedDate) && Objects.equals(finishedDate, that.finishedDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, user, book, status, startedDate, finishedDate, rating);
     }
 }
