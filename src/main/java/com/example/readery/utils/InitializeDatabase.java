@@ -47,6 +47,7 @@ public class InitializeDatabase {
         initAuthors();
         initWorks();
         System.out.println("----Initalization complete------");
+        bookRepository.createGinIndex();
     }
 
     private void initAuthors(){
@@ -151,6 +152,7 @@ public class InitializeDatabase {
             System.out.println("---Making final setup---");
             bookRepository.updateAuthors();
             bookRepository.updateAuthorNames();
+            bookRepository.createGinIndex();
         } catch (IOException e) {
             log.error("Error parsing the file: " + worksLocation, e);
         }

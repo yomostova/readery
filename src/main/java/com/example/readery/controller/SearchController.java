@@ -23,7 +23,7 @@ public class SearchController {
 
     @GetMapping("/search")
     public String searchBooks(@RequestParam("query") String query, Model model) {
-        List<Book> searchResult = bookRepository.searchBooksByTitle(query);
+        List<Book> searchResult = bookRepository.searchBooks(query);
         if(!searchResult.isEmpty()){
             for (Book b: searchResult) {
                 b.configureCover(COVER_IMAGE_BASE);

@@ -12,7 +12,14 @@ import java.util.List;
 
 @Repository
 public interface BookRepository extends CrudRepository<Book,Integer> {
-    @Query(value = "SELECT * FROM books b WHERE to_tsvector(b.book_title) @@ to_tsquery(:query)", nativeQuery = true)
+    //makes sure that the search works also for phrases
+    default List<Book> searchBooks(String query){
+        String processedQuery = query.replace(" ", "&");
+        return searchBooksByTitle(processedQuery);
+    }
+
+    @Query(value = "SELECT * FROM books b WHERE to_tsvector('english', b.book_title) @@ " +
+            "to_tsquery(:query) limit 50", nativeQuery = true)
     List<Book> searchBooksByTitle(@Param("query") String query);
 
     @Modifying
@@ -31,6 +38,13 @@ public interface BookRepository extends CrudRepository<Book,Integer> {
             "WHERE ba.fk_author = a.id",
             nativeQuery = true)
     void updateAuthorNames();
+
+    @Modifying
+    @Transactional
+    @Query(value = "CREATE " +
+            "INDEX book_title_tsvector_index ON books USING " +
+            "GIN(to_tsvector('english', book_title))", nativeQuery = true)
+    void createGinIndex();
 
 
 
