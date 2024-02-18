@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Welcome page</title>
@@ -33,6 +31,16 @@
         <h1> Welcome to Readery!</h1>
     </div>
     <div><a th:insert="~{search :: search-panel}"></a></div>
+    <div class="row">
+        <label for="filterSelect">Filter by:</label>
+        <select id="filterSelect" onchange="applyFilter(this.value)">
+            <option value="all">All</option>
+            <option value="Wishlist">Wishlist</option>
+            <option value="Reading">Reading</option>
+            <option value="Finished">Finished</option>
+            <option value="Unfinished">Unfinished</option>
+        </select>
+    </div>
 </div>
 
 <section class="content">
@@ -48,27 +56,22 @@
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
-                            <a
-                                    th:href="@{'/books/' + ${readingStatus.book.id}}" class="card-title" th:text="${readingStatus.book.title}">Title</a>
+                            <a th:href="@{'/books/' + ${readingStatus.book.id}}"
+                               class="card-title" th:text="${readingStatus.book.title}">Title</a>
                             <p class="card-text"
                                th:text="${readingStatus.book.authorsNames}">Author name</p>
-                                <th:block
-                                        th:with="status=${readingStatus.status.toString()}">
-                                    <p th:if="${status == 'WISHLIST'}" class="card-text">&#127775; Wishlist</p>
-                                    <p th:if="${status == 'READING'}" class="card-text">&#128214; Reading</p>
-                                    <p th:if="${status == 'FINISHED'}" class="card-text">&#9989; Finished</p>
-                                    <p th:if="${status == 'UNFINISHED'}" class="card-text">&#128218; Unfinished</p>
-                                    <p th:if="${status == 'UNKNOWN'}"
-                                       class="card-text">Status</p>
-                                </th:block>
-
+                            <p class="card-text" th:with="status=${readingStatus.status.toString()}">
+                                <span th:if="${status == 'WISHLIST'}">&#127775; Wishlist</span>
+                                <span th:if="${status == 'READING'}">&#128214; Reading</span>
+                                <span th:if="${status == 'FINISHED'}">&#9989; Finished</span>
+                                <span th:if="${status == 'UNFINISHED'}">&#128218; Unfinished</span>
+                                <span th:if="${status == 'UNKNOWN'}">Status</span>
+                            </p>
                             <p class="card-text">
                                 <span th:if="${readingStatus.rating > 0}">
-                                    <span
-                                            th:each="rating: ${#numbers.sequence(1, readingStatus.rating)}">&#11088;</span>
+                                    <span th:each="rating: ${#numbers.sequence(1, readingStatus.rating)}">&#11088;</span>
                                 </span>
                             </p>
-
                         </div>
                     </div>
                 </div>
@@ -76,7 +79,19 @@
         </div>
     </div>
 </section>
-
-
+<script th:inline="javascript">
+    /* Define JavaScript function to apply filter */
+    function applyFilter(status) {
+        var cards = document.querySelectorAll('.card');
+        cards.forEach(function(card) {
+            var statusElement = card.querySelector('.card-text > span');
+            if (status === 'all' || statusElement.textContent.includes(status)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+</script>
 </body>
 </html>
