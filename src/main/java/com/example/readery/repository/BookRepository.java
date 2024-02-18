@@ -27,7 +27,7 @@ public interface BookRepository extends CrudRepository<Book,Integer> {
     @Query(value = "INSERT INTO book_author(fk_book, fk_author) " +
             "SELECT l.book_id, a.id " +
             "FROM authors a, book_author_library_ids l " +
-            "WHERE a.library_id LIKE l.author_library_ids ",
+            "WHERE a.library_id = l.author_library_ids ",
             nativeQuery = true)
     void updateAuthors();
 
@@ -45,6 +45,12 @@ public interface BookRepository extends CrudRepository<Book,Integer> {
             "INDEX book_title_tsvector_index ON books USING " +
             "GIN(to_tsvector('english', book_title))", nativeQuery = true)
     void createGinIndex();
+
+    @Modifying
+    @Transactional
+    @Query(value = "CREATE INDEX ON book_authors_names (book_id)", nativeQuery =
+            true)
+    void createBookAuthorsNamesIndex();
 
 
 
