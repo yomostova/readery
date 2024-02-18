@@ -46,8 +46,8 @@ public class InitializeDatabase {
     public void setUp(){
         initAuthors();
         initWorks();
+        setUpBookAuthorTables();
         System.out.println("----Initalization complete------");
-        bookRepository.createGinIndex();
     }
 
     private void initAuthors(){
@@ -82,7 +82,7 @@ public class InitializeDatabase {
                 i=i+1;
                 System.out.println("Progress " + ((double)i*BATCH_SIZE/AUTHORS)*100 +
                         " %");
-            };
+            }
             System.out.println("---Saving rest of authors to DB---");
             System.out.println("---All authors have been saved");
             //authorRepository.deleteDuplicates();
@@ -149,13 +149,22 @@ public class InitializeDatabase {
             System.out.println("---Saving rest of books to DB---");
             //custom SQL query to join books and authors through OpenLibrary id
             System.out.println("---All books have been saved---");
-            System.out.println("---Making final setup---");
-            bookRepository.updateAuthors();
-            bookRepository.updateAuthorNames();
-            bookRepository.createGinIndex();
+
         } catch (IOException e) {
             log.error("Error parsing the file: " + worksLocation, e);
         }
+    }
+
+    private void setUpBookAuthorTables(){
+        System.out.println("---Making final setup---");
+        bookRepository.updateAuthors();
+        System.out.println("---Updated book_author table---");
+        bookRepository.updateAuthorNames();
+        System.out.println("---Updated book_authors_names table---");
+        bookRepository.createGinIndex();
+        System.out.println("---Created GIN Index on books table---");
+        bookRepository.createBookAuthorsNamesIndex();
+        System.out.println("---Created Index on book_authors_names table---");
     }
 }
 
