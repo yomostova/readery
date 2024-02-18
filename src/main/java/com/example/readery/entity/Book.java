@@ -33,7 +33,7 @@ public class Book {
     private Set<Author> authors = new HashSet<>();
 
     @ElementCollection
-    @Column(length=1024)
+    @Column(length=2048)
     private List<String> authorsNames = new ArrayList<>();
 
     @ElementCollection
@@ -49,10 +49,7 @@ public class Book {
 
     public void configureCover(String coverImageBase){
         if(coverId != null && !coverId.isEmpty()){
-            String coverUrl = coverImageBase + coverId + "-M.jpg";
-            if(this.coverUrl == null){
-                this.coverUrl = coverUrl;
-            }
+            this.coverUrl = coverImageBase + coverId + "-M.jpg";
         } else {
             this.coverUrl = "/images/no-image.png";
         }
