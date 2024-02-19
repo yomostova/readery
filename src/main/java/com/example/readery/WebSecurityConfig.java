@@ -31,7 +31,9 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/hello", "/register", "/process_register", "/search", "/books/{book_id}", "/logout")
+                        .requestMatchers("/", "/hello", "/register",
+                                "/process_register", "/search", "/books" +
+                                        "/{book_id}", "/logout")
                         .permitAll()
                         .anyRequest().authenticated()
                 )
