@@ -13,10 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -59,6 +56,29 @@ public class ReadingStatusController {
 
         ModelAndView modelAndView = new ModelAndView("redirect:/books/" + bookId);
         redirAttr.addFlashAttribute("success", "Update was successful!");
+        return modelAndView;
+    }
+
+    @PostMapping("/deleteUserBook")
+    public ModelAndView deleteUserBook(@RequestParam MultiValueMap<String, String>  params,
+                                 @AuthenticationPrincipal PostgresUserDetails principle){
+        if (principle == null || principle.getUser() == null || principle.getUser().getId() == 0) {
+             return null;
+        }
+        String readingStatusId = params.getFirst("readingStatusId");
+        if (readingStatusId == null || readingStatusId.isEmpty()) {
+            throw new IllegalArgumentException("Reading status is empty");
+        }
+        String[] ids = readingStatusId.split("-");
+        int bookId = Integer.parseInt(ids[0]);
+        int userId = Integer.parseInt(ids[1]);
+
+        ReadingStatusKey key = new ReadingStatusKey();
+        key.setUserId(userId);
+        key.setBookId(bookId);
+        readingStatusRepository.deleteById(key);
+
+        ModelAndView modelAndView = new ModelAndView("redirect:/");
         return modelAndView;
     }
 

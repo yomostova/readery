@@ -42,7 +42,6 @@
         </select>
     </div>
 </div>
-
 <section class="content">
     <div class="container text-center">
         <h1>My Books</h1>
@@ -72,6 +71,17 @@
                                     <span th:each="rating: ${#numbers.sequence(1, readingStatus.rating)}">&#11088;</span>
                                 </span>
                             </p>
+                            <form th:object = "${readingStatus}"
+                                  th:attr="action=@{/deleteUserBook}"
+                                  method="post">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <input type="hidden"
+                                       name="readingStatusId"
+                                       th:value="${readingStatus.id.bookId + '-' + readingStatus.id.userId}" />
+                                <button type="submit"
+                                        th:attr="data-reading-status-id=${readingStatus.id.bookId + '-' + readingStatus.id.userId}"> <!--- onclick="deleteBook(this)" --> Delete</button>
+                            </form>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -80,7 +90,6 @@
     </div>
 </section>
 <script th:inline="javascript">
-    /* Define JavaScript function to apply filter */
     function applyFilter(status) {
         var cards = document.querySelectorAll('.card');
         cards.forEach(function(card) {

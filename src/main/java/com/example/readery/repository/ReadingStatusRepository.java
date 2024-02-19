@@ -12,5 +12,7 @@ import java.util.Set;
 @Repository
 public interface ReadingStatusRepository extends CrudRepository<ReadingStatus, ReadingStatusKey> {
     @Query(value = "SELECT * FROM reading_status r WHERE r.user_id = :userId", nativeQuery = true)
-    public Set<ReadingStatus> findAllById(@Param("userId") int userId);
+    Set<ReadingStatus> findAllById(@Param("userId") int userId);
+
+    void deleteById(ReadingStatusKey id);
 }
